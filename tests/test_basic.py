@@ -1,7 +1,7 @@
 from sys import path
 path.append('..')
 
-from unittest import TestCase, main
+from unittest import TestCase
 from re_map import process, core
 
 core.__verbose__ = True
@@ -12,18 +12,18 @@ class BasicTest(TestCase):
     text_2 = ' BBB AAA AAA BBB '
     text_3 = ' AAA AAA AAA AAA '
 
-    modifiers_0 = [ 
+    modifiers_0 = [
         ( r'(AAA)',  { 1: 'ZZZ' } ),
         ( r'(BBB)',  { 1: 'YYY' } ),
         ( r'(CCC)',  { 1: 'XXX' } ),
         ( r'(DDD)',  { 1: 'WWW' } )
     ]
 
-    modifiers_1 = [ 
+    modifiers_1 = [
         ( r'(AAA)',  { 1: 'BBB' } ),
     ]
 
-    modifiers_2 = [ 
+    modifiers_2 = [
         ( r'(AAA)',  { 1: 'BBB' } ),
         ( r'(BBB)',  { 1: 'YYY' } ),
     ]
@@ -33,32 +33,32 @@ class BasicTest(TestCase):
         ( r'(DDD)',  { 1: 'CCC' } ),
     ]
 
-    modifiers_4 = [ 
+    modifiers_4 = [
         ( r'(AAA) (BBB) (CCC)',  { 1: 'CCCC', 2: 'CCCC', 3: 'CCCC' } ),
         ( r'(DDD)',  { 1: 'CCCC' } ),
     ]
 
-    modifiers_5 = [ 
+    modifiers_5 = [
         ( r'(AAA) (BBB) (CCC)',  { 1: 'ZZZZ', 2: 'YYYYY', 3: 'XXXXXX' } ),
         ( r'((YYYYY)|(ZZZZ))',  { 1: 'WWWWWW' } ),
         ( r'(WWWWWW)',  { 1: 'QQQQQQQ' } ),
     ]
 
-    span_map = [ 
-        ((1, 4), (1, 4)), 
-        ((5, 8), (5, 8)), 
+    span_map = [
+        ((1, 4), (1, 4)),
+        ((5, 8), (5, 8)),
         ((9, 12), (9, 12)),
         ((13, 16), (13, 16))
     ]
 
     span_map_1_1 = [
-        ((1, 4), (1, 4)), 
+        ((1, 4), (1, 4)),
         ((9, 12), (9, 12))
     ]
 
-    span_map_2 = [ 
-        ((1, 4), (1, 4)), 
-        ((5, 8), (5, 8)), 
+    span_map_2 = [
+        ((1, 4), (1, 4)),
+        ((5, 8), (5, 8)),
         ((13, 16), (13, 16))
     ]
 
@@ -147,7 +147,7 @@ class BasicTest(TestCase):
     def test_5(self):
         text = str(self.text_0)
         text_processed, span_map = process(text, self.modifiers_4)
-        
+
         self.assertEqual( text_processed, ' CCCC CCCC CCCC CCCC ' )
         self.assertEqual( span_map, self.span_map_3 )
 

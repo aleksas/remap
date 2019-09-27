@@ -1,4 +1,4 @@
-import re 
+import re
 
 __verbose__ = False
 __extended__ = False
@@ -25,9 +25,10 @@ def validate(entry_1, i, replacement_span_map):
 
     entry_2 = replacement_span_map[i]
 
-    ops = [ # uses assum[ption that span[0] < span[1] 
-        lambda x, y : (x[0] < y[0]) == (x[1] < y[0]), 
-        lambda x, y : (x[0] > y[0]) == (x[0] > y[1]), 
+    # uses assum[ption that span[0] < span[1]
+    ops = [
+        lambda x, y : (x[0] < y[0]) == (x[1] < y[0]),
+        lambda x, y : (x[0] > y[0]) == (x[0] > y[1]),
         lambda x, y : (x[0] == y[0]) == (x[1] == y[1])
     ]
 
@@ -47,13 +48,13 @@ def sub(span, value):
     return span[0] - value, span[1] - value
 
 def insert(entry, current_span, other_modifier_delta, same_modifier_current_match_delta, replacement_span_map):
-    delta = span_len_delta(entry[1], entry[3]) 
+    delta = span_len_delta(entry[1], entry[3])
 
     i=0
     replace=False
     for i in range(len(replacement_span_map) + 1): # +1 for i to actually reach last element
         if i == len(replacement_span_map):
-            break        
+            break
         if replacement_span_map[i][0][0] > entry[0][1]:
             break
         if sub(replacement_span_map[i][1], delta) == current_span:
@@ -110,13 +111,12 @@ def repl(match, replacement_map, modifier_index, replacement_span_map):
 def decorate(text, text_modified, span_map):
     text = str(text)
     text_modified = str(text_modified)
-    for i in range(len(span_map)):
-        so, to = span_map[i]
-        a = so[1] - so[0]
-        b = to[1] - to[0]
+    for span in span_map:
+        a = span[0][1] - span[0][0]
+        b = span[1][1] - span[1][0]
         v = '{:x}'.format(i).upper()
-        text = text[0:so[0]] + a*v + text[so[1]:]
-        text_modified = text_modified[0:to[0]] + b*v + text_modified[to[1]:]
+        text = text[0:span[0][0]] + a*v + text[span[0][1]:]
+        text_modified = text_modified[0:span[1][0]] + b*v + text_modified[span[1][1]:]
     
     return text, text_modified
 
@@ -131,8 +131,8 @@ def process(text, modifiers):
             print ('in:', processed_text, i)
 
         processed_text = re.sub(
-            pattern = pattern, 
-            repl = lambda match: repl(match, replacement_map, i, replacement_span_map), 
+            pattern = pattern,
+            repl = lambda match: repl(match, replacement_map, i, replacement_span_map),
             string = processed_text
         )
 
