@@ -19,11 +19,11 @@ def len_delta(match_start, replacement_span_map):
 def sub(span, value):
     return span[0] - value, span[1] - value
 
-def insert(entry, current_span, replacement_span_map):
+def insert(entry, replacement_span_map):
     def validate(source_span, ref_source_span):
-        if ref_source_span[0] <= source_span[0] and ref_source_span[1] > source_span[0]:
+        if ref_source_span[0] < source_span[0] and ref_source_span[1] > source_span[0]:
             raise Exception("Illegal san intersection")
-        elif ref_source_span[0] <= source_span[1] and ref_source_span[1] > source_span[1]:
+        elif ref_source_span[0] < source_span[1] and ref_source_span[1] > source_span[1]:
             raise Exception("Illegal span intersection")
 
     delta = span_len_delta(entry[1], entry[0])
@@ -80,12 +80,13 @@ def repl(match, replacement_map, replacement_span_map):
         
         new_entry = span, span_target
         
-        current_match_delta += insert(new_entry, span, replacement_span_map)
+        current_match_delta += insert(new_entry, replacement_span_map)
 
     return match_string
 
 def update_span_map(replacement_span_map, tmp_replacement_span_map):
-    return tmp_replacement_span_map
+    for entry in tmp_replacement_span_map:
+        insert(entry, replacement_span_map)
 
 def process(text, modifiers):
     processed_text = str(text)
@@ -104,7 +105,7 @@ def process(text, modifiers):
             string = processed_text
         )
 
-        replacement_span_map = update_span_map(replacement_span_map, tmp_replacement_span_map)
+        update_span_map(replacement_span_map, tmp_replacement_span_map)
 
         if(__verbose__):
             decorate(text, processed_text, replacement_span_map)
