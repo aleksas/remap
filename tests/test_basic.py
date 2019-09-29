@@ -2,7 +2,7 @@ from sys import path
 path.append('..')
 
 from unittest import TestCase
-from re_map import process, core
+from re_map import process, core, utils
 
 core.__verbose__ = True
 
@@ -11,6 +11,7 @@ class BasicTest(TestCase):
     text_1 = ' AAA BBB AAA BBB '
     text_2 = ' BBB AAA AAA BBB '
     text_3 = ' AAA AAA AAA AAA '
+    text_4 = 'AZA'
 
     modifiers_0 = [
         ( r'(AAA)',  { 1: 'ZZZ' } ),
@@ -42,6 +43,11 @@ class BasicTest(TestCase):
         ( r'(AAA) (BBB) (CCC)',  { 1: 'ZZZZ', 2: 'YYYYY', 3: 'XXXXXX' } ),
         ( r'((YYYYY)|(ZZZZ))',  { 1: 'WWWWWW' } ),
         ( r'(WWWWWW)',  { 1: 'QQQQQQQ' } ),
+    ]
+
+    modifiers_5 = [
+        ( r'(A)',  { 1: 'BB' } ),
+        ( r'(BB)',  { 1: 'DD' } )
     ]
 
     span_map = [
@@ -76,13 +82,18 @@ class BasicTest(TestCase):
         ((5, 10), (9, 16))
     ]
 
+    span_map_5 = [
+        ((0, 1), (0, 2)),
+        ((2, 3), (3, 5))
+    ]
+
     def test_0(self):
         text = str(self.text_0)
         text_processed, span_map = process(text, self.modifiers_0)
         self.assertEqual( text_processed, ' ZZZ YYY XXX WWW ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
         self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
@@ -93,7 +104,7 @@ class BasicTest(TestCase):
         self.assertEqual( text_processed, ' ZZZ YYY ZZZ YYY ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
         self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
@@ -105,7 +116,7 @@ class BasicTest(TestCase):
         self.assertEqual( text_processed, ' BBB BBB BBB BBB ' )
         self.assertEqual( span_map, self.span_map_1_1 )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_decorated, ' 000 BBB 111 BBB ' )
         self.assertEqual( text_processed_decorated, ' 000 BBB 111 BBB ' )
@@ -117,7 +128,7 @@ class BasicTest(TestCase):
         self.assertEqual( text_processed, ' BBB BBB BBB BBB ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
         self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
@@ -128,7 +139,7 @@ class BasicTest(TestCase):
         self.assertEqual( text_processed, ' YYY ZZZ ZZZ YYY ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
         self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
@@ -139,7 +150,7 @@ class BasicTest(TestCase):
         self.assertEqual( text_processed, ' CCC CCC CCC CCC ' )
         self.assertEqual( span_map, self.span_map_2 )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 CCC 222 ' )
         self.assertEqual( text_processed_decorated, ' 000 111 CCC 222 ' )
@@ -151,7 +162,7 @@ class BasicTest(TestCase):
         self.assertEqual( text_processed, ' CCCC CCCC CCCC CCCC ' )
         self.assertEqual( span_map, self.span_map_3 )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
         self.assertEqual( text_processed_decorated, ' 0000 1111 2222 3333 ' )
@@ -163,7 +174,7 @@ class BasicTest(TestCase):
         self.assertEqual( text_processed, ' YYY YYY YYY YYY ' )
         self.assertEqual( span_map, self.span_map )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_decorated, ' 000 111 222 333 ' )
         self.assertEqual( text_processed_decorated, ' 000 111 222 333 ' )
@@ -175,11 +186,56 @@ class BasicTest(TestCase):
         self.assertEqual( text_processed, ' QQQQQQQ QQQQQQQ XXXXXX DDD ' )
         self.assertEqual( span_map, self.span_map_4 )
 
-        text_decorated, text_processed_decorated = core.decorate(text, text_processed, span_map)
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
         self.assertEqual( text_processed_decorated, ' 0000000 1111111 222222 DDD ' )
         self.assertEqual( text_decorated, ' 000 111 222 DDD ' )
 
+    def test_chain_3(self):
+        text = str(self.text_4)
+        text_processed, span_map = process(text, self.modifiers_5)
+
+        self.assertEqual( text_processed, 'DDZDD' )
+        self.assertEqual( span_map, self.span_map_5 )
+
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+
+        self.assertEqual( text_decorated, '0Z1' )
+        self.assertEqual( text_processed_decorated, '00Z11' )
+
+    def test_a(self):
+        text = 'ABAB'
+        
+        modifiers = [
+            ( r'(A)(B)',  { 1: 'CC', 2:'D'} ),
+        ]
+
+        text_processed, span_map = process(text, modifiers)
+        self.assertEqual( text_processed, 'CCDCCD' )
+        self.assertEqual( span_map, [((0, 1), (0, 2)), ((1, 2), (2, 3)), ((2, 3), (3, 5)), ((3, 4), (5, 6))] )
+
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+
+        self.assertEqual( text_decorated, '0123' )
+        self.assertEqual( text_processed_decorated, '001223' )
+
+    def test_b(self):
+        text = 'AABAAB'
+        
+        modifiers = [
+            ( r'(AA)(B)',  { 1: 'C', 2:'D'} ),
+        ]
+
+        text_processed, span_map = process(text, modifiers)
+        self.assertEqual( text_processed, 'CDCD' )
+        self.assertEqual( span_map, [((0, 2), (0, 1)), ((2, 3), (1, 2)), ((3, 5), (2, 3)), ((5, 6), (3, 4))] )
+
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+
+        self.assertEqual( text_decorated, '001223' )
+        self.assertEqual( text_processed_decorated, '0123' )
+
 if __name__ == '__main__':
     bt = BasicTest()
-    bt.test_chain_2()
+    bt.test_a()
+    bt.test_b()

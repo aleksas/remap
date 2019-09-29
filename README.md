@@ -12,3 +12,9 @@ Not all replacements are mapped crrectly.
 
 ## Goal 
 ...
+
+
+## Idea
+
+- Same re pattern doesn't alter text so the indeces are not gloabally changed
+- Different re patterns alter 
