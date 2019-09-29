@@ -15,6 +15,7 @@ def len_delta(match_start, replacement_span_map):
 
     return delta
 
+# TODO: Remove if redundant
 def sub(span, value):
     return span[0] - value, span[1] - value
 
