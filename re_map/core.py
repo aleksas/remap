@@ -96,7 +96,7 @@ def repl(match, replacement_map, replacement_span_map):
 
     return match_string
 
-def merge_span_maps(replacement_span_map, tmp_replacement_span_map):
+def update_span_map(replacement_span_map, tmp_replacement_span_map):
     return tmp_replacement_span_map
 
 def process(text, modifiers):
@@ -116,12 +116,11 @@ def process(text, modifiers):
             string = processed_text
         )
 
-        replacement_span_map = merge_span_maps(replacement_span_map, tmp_replacement_span_map)
+        replacement_span_map = update_span_map(replacement_span_map, tmp_replacement_span_map)
 
         if(__verbose__):
-            span_map = [(a, b) for a,b in replacement_span_map]
-            decorate(text, processed_text, span_map)
-            print ( span_map )
+            decorate(text, processed_text, replacement_span_map)
+            print ( replacement_span_map )
             print ('out:', processed_text, i)
 
         if __extended__:
