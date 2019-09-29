@@ -8,5 +8,5 @@ def decorate(text, text_modified, span_map):
         v = '{:x}'.format(i).upper()
         text = text[0:span[0][0]] + a*v + text[span[0][1]:]
         text_modified = text_modified[0:span[1][0]] + b*v + text_modified[span[1][1]:]
-    
+
     return text, text_modified

@@ -24,7 +24,7 @@ def insert(entry, current_span, replacement_span_map):
         if ref_source_span[0] <= source_span[0] and ref_source_span[1] > source_span[0]:
             raise Exception("Illegal san intersection")
         elif ref_source_span[0] <= source_span[1] and ref_source_span[1] > source_span[1]:
-            raise Exception("Illegal span intersection") 
+            raise Exception("Illegal span intersection")
 
     delta = span_len_delta(entry[1], entry[0])
 

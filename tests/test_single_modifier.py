@@ -2,7 +2,7 @@ from sys import path
 path.append('..')
 
 from unittest import TestCase, main
-from re_map import process, core, utils
+from re_map import process, utils
 
 class SingleModifierTestCase(TestCase):
     def test_a(self):
