@@ -15,10 +15,6 @@ def len_delta(match_start, replacement_span_map):
 
     return delta
 
-# TODO: Remove if redundant
-def sub(span, value):
-    return span[0] - value, span[1] - value
-
 def insert(entry, replacement_span_map):
     def validate(source_span, ref_source_span):
         if ref_source_span[0] < source_span[0] and ref_source_span[1] > source_span[0]:
@@ -28,7 +24,7 @@ def insert(entry, replacement_span_map):
 
     i = 0
     replace=False
-    
+
     for source_span, _ in replacement_span_map:
         if source_span[0] > entry[0][1]:
             break
