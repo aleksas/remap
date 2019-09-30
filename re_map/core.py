@@ -35,7 +35,7 @@ def insert(entry, replacement_span_map):
             break
 
         source_span = replacement_span_map[i][0]
-        
+
         if source_span[0] > entry[0][1]:
             break
         if source_span == entry[0]:
@@ -45,7 +45,7 @@ def insert(entry, replacement_span_map):
     if replace:
         # calculate delta from new entry target and old entry target
         delta = span_len_delta(entry[1], replacement_span_map[i][1])
-        
+
         # TODO: makes no sense:
         #entry[0] = replacement_span_map[i][0]
         # shouldn't work in different modifier scenario as different modifier will not have information to normalize source.
@@ -69,9 +69,9 @@ def repl(match, replacement_map, replacement_span_map):
     match_string = match.group()
     match_start = match.span(0)[0]
     delta = len_delta(match.span(1)[0], replacement_span_map)
-    
+
     current_match_delta = 0
-    
+
     for i in replacement_map.keys():
         span = match.span(i)
         group_rel_span = span[0] - match_start, span[1] - match_start
@@ -83,9 +83,9 @@ def repl(match, replacement_map, replacement_span_map):
         group_rel_span_alligned = group_rel_span[0] + match_delta, group_rel_span[1] + match_delta
 
         span_target = group_rel_span_alligned[0] + match_start, group_rel_span_alligned[0] + len(replacement) + match_start
-        
+
         new_entry = span, span_target
-        
+
         current_match_delta += insert(new_entry, replacement_span_map)
 
     return match_string

@@ -29,7 +29,7 @@ class BasicTest(TestCase):
         ( r'(BBB)',  { 1: 'YYY' } ),
     ]
 
-    modifiers_3 = [ 
+    modifiers_3 = [
         ( r'(AAA) (BBB)',  { 1: 'CCC', 2: 'CCC' } ),
         ( r'(DDD)',  { 1: 'CCC' } ),
     ]
