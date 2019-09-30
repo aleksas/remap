@@ -40,7 +40,7 @@ class MultipleModifierTestCase(TestCase):
     def test_c(self):
         text = 'ABBABB'
         modifiers = [
-            ( r'(A)',  { 1: 'CC'} ), 
+            ( r'(A)',  { 1: 'CC'} ),
             ( r'(BB)',  { 1:'D'} )
         ]
 

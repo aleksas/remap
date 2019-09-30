@@ -83,7 +83,6 @@ def repl(match, replacement_map, replacement_span_map):
         group_rel_span_alligned = group_rel_span[0] + match_delta, group_rel_span[1] + match_delta
 
         span_target = group_rel_span_alligned[0] + match_start, group_rel_span_alligned[0] + len(replacement) + match_start
-        assert(span_target[0] <= span_target[1])
         
         new_entry = span, span_target
         
