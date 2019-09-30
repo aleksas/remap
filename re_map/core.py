@@ -43,6 +43,13 @@ def insert(entry, replacement_span_map):
             break
 
     if replace:
+        # calculate delta from new entry target and old entry target
+        delta = span_len_delta(entry[1], replacement_span_map[i][1])
+        
+        # TODO: makes no sense:
+        #entry[0] = replacement_span_map[i][0]
+        # shouldn't work in different modifier scenario as different modifier will not have information to normalize source.
+        # there should be a step to calculate actual source whn merging modifiers
         del replacement_span_map[i]
 
     if i > 0:
