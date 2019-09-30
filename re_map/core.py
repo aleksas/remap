@@ -26,31 +26,24 @@ def insert(entry, replacement_span_map):
         elif ref_source_span[0] < source_span[1] and ref_source_span[1] > source_span[1]:
             raise Exception("Illegal span intersection")
 
-    delta = span_len_delta(entry[1], entry[0])
-
-    i=0
+    i = 0
     replace=False
-    for i in range(len(replacement_span_map) + 1): # +1 for i to actually reach last element
-        if i == len(replacement_span_map):
-            break
-
-        source_span = replacement_span_map[i][0]
-
+    
+    for source_span, _ in replacement_span_map:
         if source_span[0] > entry[0][1]:
             break
         if source_span == entry[0]:
             replace = True
             break
 
+        i+=1
+
     if replace:
         # calculate delta from new entry target and old entry target
         delta = span_len_delta(entry[1], replacement_span_map[i][1])
-
-        # TODO: makes no sense:
-        #entry[0] = replacement_span_map[i][0]
-        # shouldn't work in different modifier scenario as different modifier will not have information to normalize source.
-        # there should be a step to calculate actual source whn merging modifiers
         del replacement_span_map[i]
+    else:
+        delta = span_len_delta(entry[1], entry[0])
 
     if i > 0:
         validate(entry[0], replacement_span_map[i-1][0])
@@ -90,6 +83,11 @@ def repl(match, replacement_map, replacement_span_map):
 
     return match_string
 
+def normalize_source_spans(replacement_span_map, tmp_replacement_span_map):
+    # TODO: correct to actual source spans in tmp_replacement_span_map from previous modifiers in replacement_span_map
+    # in different modifier scenario separate modifier will not have information to normalize source.
+    pass
+
 def update_span_map(replacement_span_map, tmp_replacement_span_map):
     for entry in tmp_replacement_span_map:
         insert(entry, replacement_span_map)
@@ -98,9 +96,8 @@ def process(text, modifiers):
     processed_text = str(text)
     replacement_span_map = []
 
-    for i in range(len(modifiers)):
+    for i, (pattern, replacement_map) in enumerate(modifiers):
         tmp_replacement_span_map = []
-        pattern, replacement_map = modifiers[i]
 
         if(__verbose__):
             print ('in:', processed_text, i)
@@ -111,6 +108,7 @@ def process(text, modifiers):
             string = processed_text
         )
 
+        normalize_source_spans(replacement_span_map, tmp_replacement_span_map)
         update_span_map(replacement_span_map, tmp_replacement_span_map)
 
         if(__verbose__):
