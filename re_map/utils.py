@@ -1,7 +1,7 @@
 def decorate(text, text_modified, span_map):
     text = str(text)
     text_modified = str(text_modified)
-    for i in range(len(span_map)):
+    for i, span in enumerate(span_map):
         span = span_map[i]
         a = span[0][1] - span[0][0]
         b = span[1][1] - span[1][0]
