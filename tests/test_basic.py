@@ -11,7 +11,6 @@ class BasicTest(TestCase):
     text_1 = ' AAA BBB AAA BBB '
     text_2 = ' BBB AAA AAA BBB '
     text_3 = ' AAA AAA AAA AAA '
-    text_4 = 'AZA'
 
     modifiers_0 = [
         ( r'(AAA)',  { 1: 'ZZZ' } ),
@@ -45,10 +44,6 @@ class BasicTest(TestCase):
         ( r'(WWWWWW)',  { 1: 'QQQQQQQ' } ),
     ]
 
-    modifiers_5 = [
-        ( r'(A)',  { 1: 'BB' } ),
-        ( r'(BB)',  { 1: 'DD' } )
-    ]
 
     span_map = [
         ((1, 4), (1, 4)),
@@ -81,12 +76,6 @@ class BasicTest(TestCase):
         ((9, 12), (15, 21)),
         ((5, 10), (9, 16))
     ]
-
-    span_map_5 = [
-        ((0, 1), (0, 2)),
-        ((2, 3), (3, 5))
-    ]
-
     def test_0(self):
         text = str(self.text_0)
         text_processed, span_map = process(text, self.modifiers_0)
@@ -192,11 +181,17 @@ class BasicTest(TestCase):
         self.assertEqual( text_decorated, ' 000 111 222 DDD ' )
 
     def test_chain_3(self):
-        text = str(self.text_4)
-        text_processed, span_map = process(text, self.modifiers_5)
+        text = 'AZA'
+
+        modifiers = [
+            ( r'(A)',  { 1: 'BB' } ),
+            ( r'(BB)',  { 1: 'DD' } )
+        ]
+
+        text_processed, span_map = process(text, modifiers)
 
         self.assertEqual( text_processed, 'DDZDD' )
-        self.assertEqual( span_map, self.span_map_5 )
+        self.assertEqual( span_map, [ ((0, 1), (0, 2)), ((2, 3), (3, 5)) ] )
 
         text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
@@ -206,4 +201,5 @@ class BasicTest(TestCase):
 
 if __name__ == '__main__':
     #bt = BasicTest()
+    #bt.test_chain_3()
     main()
