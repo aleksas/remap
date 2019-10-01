@@ -15,7 +15,7 @@ class ChainModifierTestCase(TestCase):
             ( r'(BBB)',  { 1: 'YYY' } ),
         ]
 
-        ref_span_map = [ 
+        ref_span_map = [
             ((1, 4), (1, 4)),
             ((5, 8), (5, 8)),
             ((9, 12), (9, 12)),
