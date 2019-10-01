@@ -84,24 +84,17 @@ def repl(match, replacement_map, replacement_span_map):
 
     return match_string
 
-# TODO: optimize
 def normalize_source_spans(replacement_span_map, tmp_replacement_span_map):
+    '''
+    Corrects the source spans according to earlier length changes
+    '''
     for i, (tmp_source_span, _) in enumerate(tmp_replacement_span_map):
         delta_span = len_delta(tmp_source_span, replacement_span_map)
         tmp_replacement_span_map[i] = (tmp_source_span[0] - delta_span[0], tmp_source_span[1] - delta_span[1]), tmp_replacement_span_map[i][1]
-        
-    # TODO: correct to actual source spans in tmp_replacement_span_map from previous modifiers in replacement_span_map
-    # in different modifier scenario separate modifier will not have information to normalize source.
-    pass
 
 def update_span_map(replacement_span_map, tmp_replacement_span_map):
-    print()
-    print(replacement_span_map)
-    print(tmp_replacement_span_map)
-    print()
     for entry in tmp_replacement_span_map:
         insert(entry, replacement_span_map)
-        print(replacement_span_map)
 
 def process(text, modifiers):
     processed_text = str(text)
