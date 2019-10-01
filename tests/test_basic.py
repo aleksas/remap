@@ -72,10 +72,10 @@ class BasicTest(TestCase):
 
     span_map_4 = [
         ((1, 4), (1, 8)),
-        ((5, 8), (9, 14)),
-        ((9, 12), (15, 21)),
-        ((5, 10), (9, 16))
+        ((5, 8), (9, 16)),
+        ((9, 12), (17, 23))
     ]
+
     def test_0(self):
         text = str(self.text_0)
         text_processed, span_map = process(text, self.modifiers_0)
@@ -200,6 +200,6 @@ class BasicTest(TestCase):
 
 
 if __name__ == '__main__':
-    #bt = BasicTest()
-    #bt.test_chain_3()
-    main()
+    bt = BasicTest()
+    bt.test_chain_2()
+    #main()

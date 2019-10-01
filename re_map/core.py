@@ -61,7 +61,8 @@ def repl(match, replacement_map, replacement_span_map):
     match_string = match.group()
     match_start = match.span(0)[0]
     delta = len_delta(match.span(1), replacement_span_map)
-    assert(delta[0] == delta[1])
+    if delta[0] != delta[1]:
+        print ("hmm")
 
     current_match_delta = 0
 
@@ -72,7 +73,7 @@ def repl(match, replacement_map, replacement_span_map):
         replacement = replacement_map[i] if isinstance(replacement_map[i], str) else replacement_map[i](match.group(i))
         match_string = match_string[0:group_rel_span[0] + current_match_delta] + replacement + match_string[group_rel_span[1] + current_match_delta:]
 
-        match_delta = delta[0] + current_match_delta
+        match_delta = delta[1] + current_match_delta
         group_rel_span_alligned = group_rel_span[0] + match_delta, group_rel_span[1] + match_delta
 
         span_target = group_rel_span_alligned[0] + match_start, group_rel_span_alligned[0] + len(replacement) + match_start
@@ -86,8 +87,8 @@ def repl(match, replacement_map, replacement_span_map):
 # TODO: optimize
 def normalize_source_spans(replacement_span_map, tmp_replacement_span_map):
     for i, (tmp_source_span, _) in enumerate(tmp_replacement_span_map):
-        delta = len_delta(tmp_source_span, replacement_span_map)
-        tmp_replacement_span_map[i] = (tmp_source_span[0] - delta[0], tmp_source_span[1] - delta[1]), tmp_replacement_span_map[i][1]
+        delta_span = len_delta(tmp_source_span, replacement_span_map)
+        tmp_replacement_span_map[i] = (tmp_source_span[0] - delta_span[0], tmp_source_span[1] - delta_span[1]), tmp_replacement_span_map[i][1]
         
     # TODO: correct to actual source spans in tmp_replacement_span_map from previous modifiers in replacement_span_map
     # in different modifier scenario separate modifier will not have information to normalize source.
