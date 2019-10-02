@@ -4,7 +4,7 @@ path.append('..')
 from unittest import TestCase, main
 from re_map import process, utils
 
-class MultipleModifierTestCase(TestCase):
+class BundledModifierTestCase(TestCase):
     def test_a(self):
         text = 'ABAB'
         modifiers = [
