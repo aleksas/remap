@@ -134,4 +134,6 @@ class ChainModifierTestCase(TestCase):
 
 
 if __name__ == '__main__':
+    #cmtc = ChainModifierTestCase()
+    #cmtc.test_chain_2()
     main()
