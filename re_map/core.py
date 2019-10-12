@@ -33,7 +33,7 @@ def merge_spans(spans):
         if not merged_span:
             merged_span = span
 
-        merged_span = merge(merged_span, span)    
+        merged_span = merge(merged_span, span)
     return merged_span
 
 def merge_intersecting_spans(spans):
@@ -41,7 +41,7 @@ def merge_intersecting_spans(spans):
     for span in spans:
         if not current:
             current = span
-        
+
         if intersect(current, span):
             current = merge(current, span)
         else:
@@ -65,7 +65,7 @@ def sum_entry_deltas(entries):
     for entry in entries:
         res += span_len_delta(entry[1], entry[0])
 
-# span_arr_length ( merge_overlapping_spans(source) ) -  
+# span_arr_length ( merge_overlapping_spans(source) ) -
 # get diff from merged source spans
 # add up all diff to entry_len_delta sum
 # merge old entries with intersecting new_entry and delete old entries
@@ -83,14 +83,10 @@ def insert(entry, replacement_span_map):
         if intersect(ref_source_span, source_span):
             raise Exception("Illegal span intersection")
 
-    replace=False
     intersecting = []
 
-    i = 0    
+    i = 0
     for i, (source_span, _, _) in enumerate(replacement_span_map):
-        if source_span == entry[0]:
-            replace = True
-            break
         if source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]:
             break
         i+=1
@@ -121,22 +117,11 @@ def insert(entry, replacement_span_map):
 
         source_span = (source_span_start, source_span_start + source_length + entry_source_length)
         target_span = (target_span_start, target_span_start + target_length + entry_target_length)
-        
+
         entry = source_span, (target_span[0], target_span[1]), entry[2]
 
         for e in merge_entries:
             replacement_span_map.remove(e)
-
-        '''source_spans = [span for span,_, _ in replacement_span_map[i:i + merge_count]]
-        target_span_start = min([start for _,(start, _), _ in replacement_span_map[i:i + merge_count]])
-        target_span_length = span_arr_length([span for _, span, _ in replacement_span_map[i:i + merge_count]])
-        #merged_intersecting_length = span_arr_length(merge_intersecting_spans(source_spans))
-        source_span = merge_spans(source_spans)
-        merged_length = span_arr_length([source_span])
-        #extra_source_span_length = merged_length - merged_intersecting_length
-        target_span = target_span_start, target_span_start + target_span_length + merged_length
-        print (source_span, target_span)
-        print (entry)'''
 
     if i > 0:
         validate(entry[0], replacement_span_map[i-1][0])
@@ -157,8 +142,6 @@ def repl(match, replacement_map, replacement_span_map):
     match_string = match.group()
     match_start = match.span(0)[0]
     delta = span_offset(match.span(1), replacement_span_map)
-    if delta[0] != delta[1]:
-        print("hmm")
 
     current_match_delta = 0
 
