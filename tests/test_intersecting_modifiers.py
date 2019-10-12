@@ -80,6 +80,4 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( text_processed_decorated, 'C 00 C' )
 
 if __name__ == '__main__':
-    tc = IntersectingModifierTestCase()
-    tc.test_chain_4()
-    #main()
+    main()

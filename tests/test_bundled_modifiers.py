@@ -54,6 +54,4 @@ class BundledModifierTestCase(TestCase):
         self.assertEqual( text_processed_decorated, '001223' )
 
 if __name__ == '__main__':
-    #tc = BundledModifierTestCase()
-    #tc.test_b()
     main()
