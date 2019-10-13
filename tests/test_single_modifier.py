@@ -44,5 +44,33 @@ class SingleModifierTestCase(TestCase):
         self.assertEqual( text_decorated, '011233' )
         self.assertEqual( text_processed_decorated, '001223' )
 
+    def test_new(self):
+        numbers = {5: 'five', 8: 'eight', 10: 'ten'}
+        orginal_numbers = {1: 'first', 2: 'second'}
+
+        modifiers = [
+            ( r'der (G\.) Be',  { 1: 'Graham'} ),
+            ( r' (&) ',  { 1: 'and'} ),
+            ( r' (etc)\.',  { 1: 'et cetera'} ),
+            ( r' ((\d+)((st)|(nd)|(rd)|(th))) ',  { 2: lambda x: orginal_numbers[int(x)], 3: '' } ),
+            ( r' (\d+) ',  { 1: lambda x: numbers[int(x)] } ),
+            ( r'([^ ]+)',  { 1: lambda x: x } ),
+        ]
+
+        text = 'Alexander G. Bell ate 10 apples & 8 cucumbers. The 1st apple was rotten, the 2nd was too, also the third, fourth etc.'
+                
+        text_processed, span_map = process(text, modifiers)
+
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+
+        print (text)
+        print (text_decorated)
+        print (text_processed_decorated)
+        print (text_processed)
+        print (span_map)
+
 if __name__ == '__main__':
-    main()
+    tc = SingleModifierTestCase()
+    tc.test_d()
+
+    #main()

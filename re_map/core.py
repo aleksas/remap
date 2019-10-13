@@ -106,10 +106,11 @@ def insert(entry, replacement_span_map):
 
         merge_entries = [replacement_span_map[i] for i in intersecting]
 
+        aligned_entry_target_span = (entry[1][0], entry[1][1] - entry[2])
         for e in merge_entries:
             entry_source_length -= span_length(intersect(e[0], entry[0]))
-            aligned_entry_target_span = (entry[1][0], entry[1][1] - entry[2])
-            entry_target_length -= span_length(intersect(e[1], aligned_entry_target_span))
+            target_intersection = intersect(e[1], aligned_entry_target_span)
+            entry_target_length -= span_length(target_intersection) if target_intersection else 0
             source_length += span_length(e[0])
             target_length += span_length(e[1])
             source_span_start = min(source_span_start, e[0][0])
