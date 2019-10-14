@@ -101,19 +101,37 @@ class IntersectingModifierTestCase(TestCase):
     def test_intersection_6(self):
         modifiers = [
             ( r' (AAA)B',  { 1: 'CCC CCC'} ),
-            ( r'([^ ]+)',  { 1: lambda x: x } ),
+            ( r'(CCCB)',  { 1: lambda x: x } ),
         ]
 
         text = ' AAAB'
 
         text_processed, span_map = process(text, modifiers)
         self.assertEqual( text_processed, ' CCC CCCB' )
-        self.assertEqual( span_map, [((1, 4), (1, 8)), ((4, 5), (8, 9))] )
+        self.assertEqual( span_map, [((1, 5), (1, 9))] )
 
         text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
 
-        self.assertEqual( text_decorated, '00001' )
-        self.assertEqual( text_processed_decorated, '0000000001' )
+        self.assertEqual( text_decorated, ' 0000' )
+        self.assertEqual( text_processed_decorated, ' 00000000' )
+
+
+    def test_intersection_7(self):
+        modifiers = [
+            ( r'B(AAA) ',  { 1: 'CCC CCC'} ),
+            ( r'(BCCC)',  { 1: lambda x: x } ),
+        ]
+
+        text = 'BAAA '
+
+        text_processed, span_map = process(text, modifiers)
+        self.assertEqual( text_processed, 'BCCC CCC ' )
+        self.assertEqual( span_map, [((0, 4), (0, 8))] )
+
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+
+        self.assertEqual( text_decorated, '0000 ' )
+        self.assertEqual( text_processed_decorated, '00000000 ' )
 
     def test_multiple_intersections_1(self):
         text = ' C AAA C D '
@@ -134,8 +152,30 @@ class IntersectingModifierTestCase(TestCase):
         self.assertEqual( text_decorated, '00000000 1 ' )
         self.assertEqual( text_processed_decorated, '000 11 ' )
 
+
+    def test_new(self):
+        modifiers = [
+            ( r' (etc)\.',  { 1: 'et cetera'} ),
+            ( r'([^ ]+)',  { 1: lambda x: x } ),
+        ]
+
+        text = ' etc.'
+                
+        text_processed, span_map = process(text, modifiers)
+
+        self.assertEqual( text_processed, ' et cetera.' )
+        self.assertEqual( span_map, [ ((1, 4), (1, 10)) ] )
+
+        text_decorated, text_processed_decorated = utils.decorate(text, text_processed, span_map)
+
+
+        self.assertEqual( text_decorated, ' 000.' )
+        self.assertEqual( text_processed_decorated, ' 000000000.' )
+
+
+
 if __name__ == '__main__':
     tc = IntersectingModifierTestCase()
-    tc.test_intersection_6()
+    tc.test_new()
 
     #main()

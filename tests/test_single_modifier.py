@@ -71,6 +71,6 @@ class SingleModifierTestCase(TestCase):
 
 if __name__ == '__main__':
     tc = SingleModifierTestCase()
-    tc.test_d()
+    tc.test_new()
 
     #main()

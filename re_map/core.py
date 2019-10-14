@@ -7,15 +7,17 @@ __extended__ = False
 def span_len_delta(span_1, span_2):
     return (span_1[1] - span_1[0]) - (span_2[1] - span_2[0])
 
+# TODO: Rewrite, too complicated
 def span_offset(span, replacement_span_map):
     delta_start, delta_end = 0, 0
-    for a in replacement_span_map:
-        span_source, span_target, _ = a
-        if span_target[1] <= span[1]:
+    for span_source, span_target, _ in replacement_span_map:
+        if span[1] >= span_target[1]:
             d = span_len_delta(span_target, span_source)
             delta_end += d
-            if span_target[1] <= span[0]:
+            if span[0] >= span_target[1] or (span[0] - d >= span_target[0]):
                 delta_start += d
+        else:
+            break
 
     return delta_start, delta_end
 
@@ -142,6 +144,8 @@ def clean_replacement_span_map(replacement_span_map):
 def repl(match, replacement_map, replacement_span_map):
     match_string = match.group()
     match_start = match.span(0)[0]
+    if len(match.regs) == 1:
+        raise Exception('No match groups in regex pattern.')
     delta = span_offset(match.span(1), replacement_span_map)
 
     current_match_delta = 0
