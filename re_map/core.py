@@ -11,7 +11,7 @@ def span_len_delta(span_1, span_2):
 def span_offset(span, replacement_span_map):
     delta_start, delta_end = 0, 0
     for span_source, span_target, _ in replacement_span_map:
-        if span[1] >= span_target[1]:
+        if span_target[1] <= span[1]:
             d = span_len_delta(span_target, span_source)
             delta_end += d
             if span[0] >= span_target[1] or (span[0] - d >= span_target[0]):
@@ -88,14 +88,19 @@ def insert(entry, replacement_span_map):
     intersecting = []
 
     i = 0
-    for i, (source_span, _, _) in enumerate(replacement_span_map):
-        if source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]:
+    for i, (source_span, target_span, _) in enumerate(replacement_span_map):
+        if (
+            (source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]) or 
+            (target_span[0] >= entry[1][1] or target_span[0] >= entry[1][0]) or 
+            (intersect(source_span, entry[0])) or
+            (intersect(target_span, entry[1]))
+            ):
             break
         i+=1
 
     for j in range(i, len(replacement_span_map)):
-        source_span, _, _ = replacement_span_map[j]
-        if source_span[0] >= entry[0][1]:
+        source_span, target_span, _ = replacement_span_map[j]
+        if source_span[0] >= entry[0][1] and target_span[0] >= entry[1][1]:
             break
         if intersect(source_span, entry[0]):
             intersecting.append(j)
@@ -110,7 +115,8 @@ def insert(entry, replacement_span_map):
 
         aligned_entry_target_span = (entry[1][0], entry[1][1] - entry[2])
         for e in merge_entries:
-            entry_source_length -= span_length(intersect(e[0], entry[0]))
+            source_intersection = intersect(e[0], entry[0])
+            entry_source_length -= span_length(source_intersection) if source_intersection else 0
             target_intersection = intersect(e[1], aligned_entry_target_span)
             entry_target_length -= span_length(target_intersection) if target_intersection else 0
             source_length += span_length(e[0])
@@ -184,26 +190,32 @@ def update_span_map(replacement_span_map, tmp_replacement_span_map):
 def process(text, modifiers):
     processed_text = str(text)
     replacement_span_map = []
+    if(__verbose__):
+        print ('text:', text)
 
     for i, (pattern, replacement_map) in enumerate(modifiers):
         tmp_replacement_span_map = []
 
         if(__verbose__):
-            print ('in:', processed_text, i)
+            print (i, 'pattern:', pattern)
+            print (i, 'replacement_map:', replacement_map)
+            print (i, 'in:', processed_text)
 
         processed_text = re.sub(
             pattern = pattern,
             repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map),
             string = processed_text
         )
-
         normalize_source_spans(replacement_span_map, tmp_replacement_span_map)
+        if(__verbose__):
+            print (i, replacement_span_map )
+            print (i, tmp_replacement_span_map)
         update_span_map(replacement_span_map, tmp_replacement_span_map)
 
         if(__verbose__):
             decorate(text, processed_text, replacement_span_map)
-            print ( replacement_span_map )
-            print ('out:', processed_text, i)
+            print (i, replacement_span_map )
+            print (i, 'out:', processed_text)
 
         if __extended__:
             pass
