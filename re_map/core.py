@@ -193,7 +193,13 @@ def process(text, modifiers):
     if(__verbose__):
         print ('text:', text)
 
-    for i, (pattern, replacement_map) in enumerate(modifiers):
+    for i, modifier in enumerate(modifiers):
+        if len(modifier) == 2:
+            pattern, replacement_map = modifier
+            flags = 0
+        elif len(modifier) == 3:
+            pattern, replacement_map, flags = modifier
+
         tmp_replacement_span_map = []
 
         if(__verbose__):
@@ -204,12 +210,16 @@ def process(text, modifiers):
         processed_text = re.sub(
             pattern = pattern,
             repl = lambda match: repl(match, replacement_map, tmp_replacement_span_map),
-            string = processed_text
+            string = processed_text,
+            flags = flags
         )
+
         normalize_source_spans(replacement_span_map, tmp_replacement_span_map)
+        
         if(__verbose__):
             print (i, replacement_span_map )
             print (i, tmp_replacement_span_map)
+
         update_span_map(replacement_span_map, tmp_replacement_span_map)
 
         if(__verbose__):
