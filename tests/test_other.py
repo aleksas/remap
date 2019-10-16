@@ -140,7 +140,7 @@ class OtherTestCase(TestCase):
 
     def test_7(self):
         text = 'ab'
-        modifiers = [ 
+        modifiers = [
             ( r'((a)(b))',  { 1: 'c', 2:'d', 3:'e'} ),
         ]
 

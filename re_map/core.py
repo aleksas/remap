@@ -217,7 +217,7 @@ def process(text, modifiers):
         )
 
         normalize_source_spans(replacement_span_map, tmp_replacement_span_map)
-        
+
         if(__verbose__):
             print (i, replacement_span_map )
             print (i, tmp_replacement_span_map)
