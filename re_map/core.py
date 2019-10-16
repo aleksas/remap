@@ -80,7 +80,7 @@ def sum_entry_deltas(entries):
     for entry in entries:
         res += span_len_delta(entry[1], entry[0])
 
-def insert(entry, replacement_span_map):
+def insert(entry, replacement_span_map, allow_intersect=True):
     def validate(source_span, ref_source_span):
         if intersect(ref_source_span, source_span):
             raise Exception("Illegal span intersection")
@@ -104,6 +104,8 @@ def insert(entry, replacement_span_map):
             break
         if intersect(source_span, entry[0]):
             intersecting.append(j)
+            if not allow_intersect:
+                raise ValueError("Intersecting groups not allowed.")
 
     if len(intersecting):
         entry_source_length = span_length(entry[0])
@@ -170,7 +172,7 @@ def repl(match, replacement_map, replacement_span_map):
 
         new_entry = span, span_target, span_len_delta(span_target, span)
 
-        insert(new_entry, replacement_span_map)
+        insert(new_entry, replacement_span_map, allow_intersect=False)
         current_match_delta += new_entry[2]
 
     return match_string

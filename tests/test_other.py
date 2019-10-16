@@ -144,7 +144,7 @@ class OtherTestCase(TestCase):
             ( r'((a)(b))',  { 1: 'c', 2:'d', 3:'e'} ),
         ]
 
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValueError):
             process(text, modifiers)
 
 if __name__ == '__main__':
