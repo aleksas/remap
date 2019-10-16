@@ -1,4 +1,5 @@
 import re
+from math import ceil, floor
 from .utils import decorate
 
 __verbose__ = False
@@ -7,17 +8,30 @@ __extended__ = False
 def span_len_delta(span_1, span_2):
     return (span_1[1] - span_1[0]) - (span_2[1] - span_2[0])
 
-# TODO: Rewrite, too complicated
+def span_rtrim(span, value):
+    if span[0] < value:
+        return min(span[0], value), min(span[1], value)
+
 def span_offset(span, replacement_span_map):
     delta_start, delta_end = 0, 0
     for span_source, span_target, _ in replacement_span_map:
-        if span_target[1] <= span[1]:
-            d = span_len_delta(span_target, span_source)
+        d = span_len_delta(span_target, span_source)
+        if span_target[1] <= span[0]:
             delta_end += d
-            if span[0] >= span_target[1] or (span[0] - d >= span_target[0]):
-                delta_start += d
+            delta_start += d
         else:
-            break
+            target_trimmed_start = span_rtrim(span_target, span[0])
+            target_trimmed_end = span_rtrim(span_target, span[1])
+            
+            if target_trimmed_end:
+                # int() and 1.0 multipliers for 2.7 compatibility
+                ratio_end = 1.0 * span_length(target_trimmed_end) / span_length(span_target)
+                delta_end += int(floor(d * ratio_end))
+                if target_trimmed_start:
+                    ratio_start = 1.0 * span_length(target_trimmed_start) / span_length(span_target)
+                    delta_start += int(ceil(d * ratio_start))
+            else:
+                break
 
     return delta_start, delta_end
 
@@ -66,19 +80,6 @@ def sum_entry_deltas(entries):
     res = 0
     for entry in entries:
         res += span_len_delta(entry[1], entry[0])
-
-# span_arr_length ( merge_overlapping_spans(source) ) -
-# get diff from merged source spans
-# add up all diff to entry_len_delta sum
-# merge old entries with intersecting new_entry and delete old entries
-# and propagate len change as before
-# merge target spans into one starting at the least start value and ending at start + sums
-
-# 1. get new entry source and target span lengths
-# 2. subtract intersection lenghts between entry and merge entries
-# 3. get source and target starting point from merge entries + [entry]
-# 4. add source and target entry lenghts + subtracted lenghts to the start points to get end points
-# 5. delete merge entries
 
 def insert(entry, replacement_span_map):
     def validate(source_span, ref_source_span):

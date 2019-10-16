@@ -174,7 +174,4 @@ class IntersectingModifierTestCase(TestCase):
 
 
 if __name__ == '__main__':
-    tc = IntersectingModifierTestCase()
-    tc.test_new()
-
-    #main()
+    main()
