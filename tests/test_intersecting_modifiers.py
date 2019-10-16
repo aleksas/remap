@@ -160,7 +160,7 @@ class IntersectingModifierTestCase(TestCase):
         ]
 
         text = ' etc.'
-                
+
         processed_text, span_map = process(text, modifiers)
 
         self.assertEqual( processed_text, ' et cetera.' )

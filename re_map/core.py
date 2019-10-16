@@ -22,7 +22,7 @@ def span_offset(span, replacement_span_map):
         else:
             target_trimmed_start = span_rtrim(span_target, span[0])
             target_trimmed_end = span_rtrim(span_target, span[1])
-            
+
             if target_trimmed_end:
                 # int() and 1.0 multipliers for 2.7 compatibility
                 ratio_end = 1.0 * span_length(target_trimmed_end) / span_length(span_target)
@@ -91,8 +91,8 @@ def insert(entry, replacement_span_map):
     i = 0
     for i, (source_span, target_span, _) in enumerate(replacement_span_map):
         if (
-            (source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]) or 
-            (target_span[0] >= entry[1][1] or target_span[0] >= entry[1][0]) or 
+            (source_span[0] >= entry[0][1] or source_span[0] >= entry[0][0]) or
+            (target_span[0] >= entry[1][1] or target_span[0] >= entry[1][0]) or
             (intersect(source_span, entry[0])) or
             (intersect(target_span, entry[1]))
             ):

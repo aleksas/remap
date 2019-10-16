@@ -58,7 +58,7 @@ class SingleModifierTestCase(TestCase):
         ]
 
         text = 'Alexander G. Bell ate 10 apples & 8 cucumbers. The 1st apple was rotten, the 2nd was too, also the third, fourth etc.'
-                
+
         processed_text, span_map = process(text, modifiers)
 
         decorated_text, decorated_processed_text = utils.decorate(text, processed_text, span_map)
